@@ -3,17 +3,13 @@ os:
     - osx
 
 osx_image:
-    - xcode9.4
     - xcode11.3
-    - xcode12
 
 compiler:
     - clang
 
 env:
-    #- {} # boost-python doesn't provide cmake files; boost-python3 does, but they don't support python2
     - FLAGS='-DUSE_PYTHON_3=ON'
-    - FLAGS='-DUSE_PYTHON_3=OFF -DBoost_NO_BOOST_CMAKE=ON'
 
 jobs:
     fast_finish: true
