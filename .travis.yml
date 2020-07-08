@@ -4,16 +4,21 @@ os:
 
 osx_image:
     - xcode9.4
-    - xcode11.3
-    - xcode12
+    #- xcode12
 
 compiler:
     - clang
 
+before_install:
+  if [ "`python --version`" = "Python 3.7.5" ];
+  then
+    brew uninstall python;
+    brew install python@3.8;
+  fi
+
 env:
-    #- {} # boost-python doesn't provide cmake files; boost-python3 does, but they don't support python2
     - FLAGS='-DUSE_PYTHON_3=ON'
-    - FLAGS='-DUSE_PYTHON_3=OFF -DBoost_NO_BOOST_CMAKE=ON'
+    #- FLAGS='-DUSE_PYTHON_3=OFF -DBoost_NO_BOOST_CMAKE=ON'
 
 jobs:
     fast_finish: true
