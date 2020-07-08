@@ -1,83 +1,24 @@
 language: cpp
 os:
-    - linux
     - osx
-
-# Regrettably, `dist` is a string enum,
-# and does not accept a list.
-#
-# Thus, when updating be sure to add sections
-# to jobs.include to cover the old distro
-dist: focal # (20.04 LTS)
 
 osx_image:
     - xcode9.4
     - xcode11.3
+    - xcode12
 
 compiler:
-    - gcc
     - clang
 
 env:
-    - {}
+    #- {} # boost-python doesn't provide cmake files; boost-python3 does, but they don't support python2
     - FLAGS='-DUSE_PYTHON_3=ON'
     - FLAGS='-DUSE_PYTHON_3=OFF -DBoost_NO_BOOST_CMAKE=ON'
 
 jobs:
-    include:
-        # Ubuntu Bionic (18.04 LTS)
-        # Note: the first entry in the `compiler` and `env` lists
-        #       above become the defaults below, so we only have
-        #       to set them where they differ
-        - dist: bionic
-        - dist: bionic
-          compiler: clang
-        - dist: bionic
-          env: FLAGS='-DUSE_PYTHON_3=ON'
-        - dist: bionic
-          compiler: clang
-          env: FLAGS='-DUSE_PYTHON_3=ON'
-        # Ubuntu Xenial (16.04 LTS)
-        - dist: xenial
-        - dist: xenial
-          compiler: clang
-        - dist: xenial
-          env: FLAGS='-DUSE_PYTHON_3=ON'
-        - dist: xenial
-          compiler: clang
-          env: FLAGS='-DUSE_PYTHON_3=ON'
-
-    exclude:
-        # osx requires the Boost_NO_BOOST_CMAKE flag for python2
-        # but we don't need that for linux
-        - os: osx
-          env: []
-        - os: linux
-          env: FLAGS='-DUSE_PYTHON_3=OFF -DBoost_NO_BOOST_CMAKE=ON'
-
-        # focal's libboost-python-dev doesn't support python2
-        - dist: focal
-          env: []
-
-    allow_failures:
-        - os: osx
-        - env: FLAGS='-DUSE_PYTHON_3=ON'
-
     fast_finish: true
 
 addons:
-  apt:
-    packages:
-      - libgl1-mesa-glx
-      - freeglut3-dev
-      - libopenal-dev
-      - libsdl-gfx1.2-dev
-      - libvorbis-dev
-      - libjpeg-dev
-      - libpng-dev
-      - libgtk-3-dev
-      - libboost-python-dev
-      - libboost-log-dev
   homebrew:
      update: true
      packages:
