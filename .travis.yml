@@ -1,10 +1,18 @@
 language: cpp
 os:
- - linux
+    - linux
+    - osx
 
-# When updating be sure to add a section
-# to the matrix to cover the distro
-dist: bionic
+# Regrettably, `dist` is a string enum,
+# and does not accept a list.
+#
+# Thus, when updating be sure to add sections
+# to jobs.include to cover the old distro
+dist: focal # (20.04 LTS)
+
+osx_image:
+    - xcode9.4
+    - xcode11.3
 
 compiler:
     - gcc
@@ -12,39 +20,61 @@ compiler:
 
 env:
     - {}
-    - FLAGS='-DUSE_PYTHON_3=ON'
+    - FLAGS="-DBoost_NO_BOOST_CMAKE=ON"
+    - FLAGS="-DUSE_PYTHON_3=ON"
 
 jobs:
     include:
-        - os: linux
-          dist: xenial
-          compiler: gcc
-          name: "Ubuntu 16.04 LTS - GCC"
-        - os: linux
-          dist: xenial
+        # Ubuntu Bionic (18.04 LTS)
+        # Note: The first entry in the `os`, `compiler`, and `env`
+        #       lists above become the defaults below, so we only
+        #       have to set them where they differ
+        - dist: bionic
+        - dist: bionic
           compiler: clang
-          name: "Ubuntu 16.04 LTS - Clang"
-        - os: linux
-          dist: xenial
+        - dist: bionic
+          env: FLAGS="-DUSE_PYTHON_3=ON"
+        - dist: bionic
           compiler: clang
-          name: "Ubuntu 16.04 LTS - Py3"
-          env: FLAGS='-DUSE_PYTHON_3=ON'
+          env: FLAGS="-DUSE_PYTHON_3=ON"
+
+        # Ubuntu Xenial (16.04 LTS)
+        - dist: xenial
+        - dist: xenial
+          compiler: clang
+        - dist: xenial
+          env: FLAGS="-DUSE_PYTHON_3=ON"
+        - dist: xenial
+          compiler: clang
+          env: FLAGS="-DUSE_PYTHON_3=ON"
+
+    exclude:
+        # osx requires the Boost_NO_BOOST_CMAKE flag for python2
+        # but we don't need that for linux
         - os: osx
-          osx_image: xcode11.3
-          env: FLAGS='-DUSE_PYTHON_3=OFF -DBoost_NO_BOOST_CMAKE=ON'
+          env: []
+        - os: linux
+          env: FLAGS="-DBoost_NO_BOOST_CMAKE=ON"
+
+        # focal's libboost-python-dev doesn't support python2
+        - os: linux
+          dist: focal
+          env: []
+
+        # XCode9.4 has problems with python3
         - os: osx
-          osx_image: xcode11.3
-          env: FLAGS='-DUSE_PYTHON_3=ON'
+          osx_image: xcode9.4
+          env: FLAGS="-DUSE_PYTHON_3=ON"
+
     allow_failures:
         - os: osx
-        - dist: xenial
-          env: FLAGS='-DUSE_PYTHON_3=ON'
+        - env: FLAGS="-DUSE_PYTHON_3=ON"
+
     fast_finish: true
 
 addons:
   apt:
     packages:
-      - python-dev
       - libgl1-mesa-glx
       - freeglut3-dev
       - libopenal-dev
@@ -53,7 +83,7 @@ addons:
       - libjpeg-dev
       - libpng-dev
       - libgtk-3-dev
-      - libboost-python-dev
+      - libboost-python-dev # pulls python-dev
       - libboost-log-dev
   homebrew:
      update: true
@@ -67,8 +97,10 @@ addons:
       - gtk+3
       - gtkglext
       - boost-python
+      - boost-python3
 
 script:
+  - if [ "$TRAVIS_OS_NAME" = "osx" ]; then FLAGS="$FLAGS -DCMAKE_FIND_FRAMEWORK=LAST"; fi
   - ./sh/vsbuild.sh $FLAGS
 
 # CI/CD hookups
