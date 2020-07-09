@@ -171,13 +171,6 @@ typedef int ptrdiff_t;
 #define _PTRDIFF_T_DEFINED
 #endif
 
-#if !defined(CS_HAVE_INTMAX_T)
-/// Greatest-width integer
-typedef int64 intmax_t;
-/// Greatest-width unsigned integer
-typedef uint64 uintmax_t;
-#endif
-
 
 // Provide wchar_t and wint_t. If the configure script determined that these
 // types exist in the standard headers, then just employ those types.  For
