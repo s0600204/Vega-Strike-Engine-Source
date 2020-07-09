@@ -33,7 +33,6 @@
 extern "C" {
 //#define XMD_H
 #include <jconfig.h>
-#include <jmorecfg.h>
 #include <jpeglib.h>
 }
 /*--------------
