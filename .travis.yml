@@ -1,53 +1,32 @@
 language: cpp
 os:
- - linux
+    - osx
 
-# When updating be sure to add a section
-# to the matrix to cover the distro
-dist: bionic
+osx_image:
+    - xcode9.4
+    - xcode11.3
+    - xcode12
 
 compiler:
-    - gcc
     - clang
 
 env:
-    - {}
-    - FLAGS='-DUSE_PYTHON_3=ON'
+    - FLAGS="-DBoost_NO_BOOST_CMAKE=ON"
+    - FLAGS="-DUSE_PYTHON_3=ON"
 
 jobs:
-    include:
-        - os: linux
-          dist: xenial
-          compiler: gcc
-          name: "Ubuntu 16.04 LTS - GCC"
-        - os: linux
-          dist: xenial
-          compiler: clang
-          name: "Ubuntu 16.04 LTS - Clang"
-        - os: osx
-          osx_image: xcode11.3
-          env: FLAGS='-DUSE_PYTHON_3=OFF -DBoost_NO_BOOST_CMAKE=ON'
-        - os: osx
-          osx_image: xcode11.3
-          env: FLAGS='-DUSE_PYTHON_3=ON'
+
+    exclude:
+        # XCode9.4 has problems with python3
+        - osx_image: xcode9.4
+          env: FLAGS="-DUSE_PYTHON_3=ON"
+
     allow_failures:
-        - os: osx
+        - env: FLAGS="-DUSE_PYTHON_3=ON"
+
     fast_finish: true
 
 addons:
-  apt:
-    packages:
-      - python-dev
-      - libgl1-mesa-glx
-      - freeglut3-dev
-      - libopenal-dev
-      - libsdl-gfx1.2-dev
-      - libvorbis-dev
-      - libjpeg-dev
-      - libpng-dev
-      - libgtk-3-dev
-      - libboost-python-dev
-      - libboost-log-dev
   homebrew:
      update: true
      packages:
@@ -60,8 +39,10 @@ addons:
       - gtk+3
       - gtkglext
       - boost-python
+      - boost-python3
 
 script:
+  - FLAGS="$FLAGS -DCMAKE_FIND_FRAMEWORK=LAST"
   - ./sh/vsbuild.sh $FLAGS
 
 # CI/CD hookups
