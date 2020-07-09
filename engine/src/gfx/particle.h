@@ -3,6 +3,7 @@
 
 #include <vector>
 #include <memory>
+#include <string>
 #include "aligned.h"
 #include "vec.h"
 #include "gfxlib_struct.h"
