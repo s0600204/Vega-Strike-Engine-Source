@@ -12,7 +12,7 @@ compiler:
 
 env:
     - FLAGS="-DBoost_NO_BOOST_CMAKE=ON"
-    - FLAGS="-DUSE_PYTHON_3=ON"
+    #- FLAGS="-DUSE_PYTHON_3=ON"
 
 jobs:
 
@@ -26,20 +26,9 @@ jobs:
 
     fast_finish: true
 
-addons:
-  homebrew:
-     update: true
-     packages:
-      - mesa
-      - openal-soft
-      - sdl
-      - libvorbis
-      - jpeg
-      - libpng
-      - gtk+3
-      - gtkglext
-      - boost-python
-      - boost-python3
+install:
+  - brew update
+  - brew install mesa openal-soft sdl libvorbis jpeg libpng gtk+3 gtkglext boost-python boost-python3
 
 script:
   - FLAGS="$FLAGS -DCMAKE_FIND_FRAMEWORK=LAST"
