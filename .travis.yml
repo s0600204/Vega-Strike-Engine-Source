@@ -28,7 +28,7 @@ jobs:
 
 addons:
   homebrew:
-     update: true
+     update: false
      packages:
       - mesa
       - openal-soft
