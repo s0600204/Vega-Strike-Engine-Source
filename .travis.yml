@@ -41,6 +41,13 @@ addons:
       - boost-python
       - boost-python3
 
+before_cache:
+  - brew cleanup
+
+cache:
+    directories:
+    - $HOME/Library/Caches/Homebrew
+
 script:
   - FLAGS="$FLAGS -DCMAKE_FIND_FRAMEWORK=LAST"
   - ./sh/vsbuild.sh $FLAGS
