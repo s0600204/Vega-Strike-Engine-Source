@@ -715,18 +715,23 @@ IF (USE_SYSTEM_BOOST)
     IF (Boost_FOUND)
         MESSAGE("++ Found System Boost version : ${Boost_VERSION}")
 
+        # VERSION_EQUAL / VERSION_GREATER require a version in the form X.Y.Z
+        # With CMake versions <  3.15, Boost_VERSION is in the form it is written in boost/version.hpp (e.g. 106700)
+        # With CMake versions >= 3.15, Boost_VERSION is in the form X.Y.Z (if CMP0093 is set to "new")
+        SET(BOOST_DERIVED_VERSION "${Boost_MAJOR_VERSION}.${Boost_MINOR_VERSION}.${Boost_SUBMINOR_VERSION}")
+
         # With boost version 1.67 and above, python components are specified with a version suffix
         # (`python27`, `python38`) instead of their invocation name (`python`, `python3`)
-        IF ((Boost_VERSION VERSION_EQUAL 106700) OR (Boost_VERSION VERSION_GREATER 106700))
+        IF ((BOOST_DERIVED_VERSION VERSION_EQUAL 1.67) OR (BOOST_DERIVED_VERSION VERSION_GREATER 1.67))
             STRING(REPLACE "." ";" PYTHONLIBS_VERSION_LIST ${PYTHONLIBS_VERSION_STRING})
             LIST(GET PYTHONLIBS_VERSION_LIST 0 PYTHON_VERSION_MAJOR)
             LIST(GET PYTHONLIBS_VERSION_LIST 1 PYTHON_VERSION_MINOR)
             SET(BOOST_PYTHON_COMPONENT "python${PYTHON_VERSION_MAJOR}${PYTHON_VERSION_MINOR}")
         ELSEIF (USE_PYTHON_3)
                 SET(BOOST_PYTHON_COMPONENT "python3")
-        ELSE ((Boost_VERSION VERSION_EQUAL 106700) OR (Boost_VERSION VERSION_GREATER 106700))
+        ELSE ((BOOST_DERIVED_VERSION VERSION_EQUAL 1.67) OR (BOOST_DERIVED_VERSION VERSION_GREATER 1.67))
                 SET(BOOST_PYTHON_COMPONENT "python")
-        ENDIF ((Boost_VERSION VERSION_EQUAL 106700) OR (Boost_VERSION VERSION_GREATER 106700))
+        ENDIF ((BOOST_DERIVED_VERSION VERSION_EQUAL 1.67) OR (BOOST_DERIVED_VERSION VERSION_GREATER 1.67))
 
         UNSET(Boost_${BOOST_PYTHON_COMPONENT}_FOUND)
         MESSAGE("++ Looking for System Boost::python")
