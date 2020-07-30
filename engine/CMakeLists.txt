@@ -719,6 +719,7 @@ IF (USE_SYSTEM_BOOST)
         # With CMake versions <  3.15, Boost_VERSION is in the form it is written in boost/version.hpp (e.g. 106700)
         # With CMake versions >= 3.15, Boost_VERSION is in the form X.Y.Z (if CMP0093 is set to "new")
         SET(BOOST_DERIVED_VERSION "${Boost_MAJOR_VERSION}.${Boost_MINOR_VERSION}.${Boost_SUBMINOR_VERSION}")
+        MESSAGE("?? Boost Version is ${BOOST_DERIVED_VERSION}")
 
         # With boost version 1.67 and above, python components are specified with a version suffix
         # (`python27`, `python38`) instead of their invocation name (`python`, `python3`)
