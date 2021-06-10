@@ -1,0 +1,49 @@
+name: 'Matrix test'
+
+on:
+  push:
+    branches: [gha-matrix-test]
+  # Activate on manual activation
+  workflow_dispatch:
+
+jobs:
+  build:
+    name: Matrix testing!
+    runs-on: ubuntu-latest
+
+    strategy:
+      fail-fast: true
+      matrix:
+        image:
+          - 'ubuntu:focal'
+          - 'ubuntu:bionic'
+        compiler:
+          - gcc
+          - clang
+        flags: ['-DUSE_PYTHON_3=ON']
+        include:
+          # clang only
+          - image: 'ubuntu:xenial'
+            compiler: clang
+          - image: 'debian:buster'
+            compiler: clang
+          - image: 'opensuse/leap'
+            compiler: clang
+          - image: 'fedora:33'
+            compiler: clang
+          - image: 'fedora:32'
+            compiler: clang
+          - image: 'centos:8'
+            compiler: clang
+          # gcc only
+          - image: 'debian:stretch'
+            compiler: gcc
+          # macos
+          - image: none
+            compiler: clang
+            flags: '-DUSE_PYTHON_3=ON -DCMAKE_FIND_FRAMEWORK=LAST'
+
+    steps:
+
+    - name: Echo out
+      run: echo ${{ matrix.image }} ${{ matrix.compiler }} $ {{ matrix.flags }}
