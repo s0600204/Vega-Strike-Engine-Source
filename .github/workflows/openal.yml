@@ -13,46 +13,21 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        flags: ['-DCMAKE_FIND_FRAMEWORK=LAST']
+        flags:
+          - '-DCMAKE_FIND_FRAMEWORK=LAST'
+          - '-DCMAKE_FIND_FRAMEWORK=NEVER'
 
     steps:
 
-    #- run: ls /usr/lib/lib*
-    #  if: always()
-
-    #- run: ls /usr/local/lib/lib*
-    #  if: always()
-
-    #- run: ls /usr/local/opt/lib*
-    #  if: always()
-
-    #- name: Install mesa
-    #  if: always()
-    #  run: brew install mesa openal-soft
-
-    #- run: ls /usr/lib/lib*
-    #  if: always()
-
-    #- run: ls /usr/local/lib/lib*
-    #  if: always()
-
-    #- run: ls /usr/local/opt/lib*
-    #  if: always()
+    - name: Install deps
+      if: always()
+      run: brew install mesa openal-soft
 
     - name: Checkout repository
       uses: actions/checkout@v2
       with:
         fetch-depth: 1
         submodules: false
-
-    - run: echo $PATH
-      if: always()
-
-    - run: export PATH="/usr/local/opt/openal-soft/bin:$PATH"; echo $PATH
-      if: always()
-
-    - run: echo $PATH
-      if: always()
 
     - name: Find with CMake
       if: always()
