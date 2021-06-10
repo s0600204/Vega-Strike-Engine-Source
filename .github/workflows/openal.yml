@@ -48,9 +48,7 @@ jobs:
     - run: echo $PATH
       if: always()
 
-    - env:
-        PATH: "/usr/local/opt/openal-soft/bin:${{env.PATH}}"
-      run: echo $PATH
+    - run: export PATH="/usr/local/opt/openal-soft/bin:$PATH"; echo $PATH
       if: always()
 
     - run: echo $PATH

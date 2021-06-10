@@ -2,6 +2,6 @@
 
 set -e
 
-mkdir temp && cd temp
+mkdir find/temp && cd find/temp
 
 cmake $@ ..
