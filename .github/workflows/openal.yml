@@ -39,11 +39,17 @@ jobs:
     #- run: ls /usr/local/opt/lib*
     #  if: always()
 
+    - name: Checkout repository
+      uses: actions/checkout@v2
+      with:
+        fetch-depth: 1
+        submodules: false
+
     - run: echo $PATH
       if: always()
 
     - env:
-        PATH: "/usr/local/opt/openal-soft/bin:$PATH"
+        PATH: "/usr/local/opt/openal-soft/bin:${PATH}"
       run: echo $PATH
       if: always()
 
@@ -58,9 +64,3 @@ jobs:
       env:
         FLAGS:      ${{ matrix.flags }}
       run: find/script $FLAGS
-
-    - name: Find with CMake (alt)
-      if: always()
-      env:
-        FLAGS:      ${{ matrix.flags }}
-      run: script/script $FLAGS
