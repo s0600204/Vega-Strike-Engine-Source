@@ -18,15 +18,23 @@ jobs:
     steps:
 
     - run: ls /usr/lib/libopenal*
+      if: always()
+
     - run: ls /usr/lib/libGL*
+      if: always()
 
     - name: Install mesa
+      if: always()
       run: brew install mesa openal-soft
 
     - run: ls /usr/lib/libopenal*
+      if: always()
+
     - run: ls /usr/lib/libGL*
+      if: always()
 
     - name: Find with CMake
+      if: always()
       env:
         FLAGS:      ${{ matrix.flags }}
       run: find/script.sh $FLAGS
