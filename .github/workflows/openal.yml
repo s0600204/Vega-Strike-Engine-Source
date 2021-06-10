@@ -1,0 +1,32 @@
+name: 'OpenAL/GL detection'
+
+on:
+  # Pushes to certain branches,
+  push:
+    branches: [osx-openal]
+
+jobs:
+  build:
+    name: find openAL
+    runs-on: macos-latest
+
+    strategy:
+      fail-fast: false
+      matrix:
+        flags: ['-DCMAKE_FIND_FRAMEWORK=LAST']
+
+    steps:
+
+    - run: ls /usr/lib/libopenal*
+    - run: ls /usr/lib/libGL*
+
+    - name: Install mesa
+      run: brew install mesa openal-soft
+
+    - run: ls /usr/lib/libopenal*
+    - run: ls /usr/lib/libGL*
+
+    - name: Find with CMake
+      env:
+        FLAGS:      ${{ matrix.flags }}
+      run: find/script.sh $FLAGS
