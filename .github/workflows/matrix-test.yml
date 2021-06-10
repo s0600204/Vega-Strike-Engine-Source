@@ -9,41 +9,56 @@ on:
 jobs:
   build:
     name: Matrix testing!
-    runs-on: ubuntu-latest
+    runs-on: ${{ matrix.os }}
 
     strategy:
       fail-fast: true
       matrix:
+        os:
+          - ubuntu-latest
         image:
           - 'ubuntu:focal'
           - 'ubuntu:bionic'
+          - 'ubuntu:xenial'
+          - 'debian:buster'
+          - 'debian:stretch'
+          - 'fedora:33'
+          - 'fedora:32'
+          - 'centos:8'
         compiler:
           - gcc
           - clang
-        flags: ['-DUSE_PYTHON_3=ON']
+        flags:
+          - '-DUSE_PYTHON_3=ON'
+
         include:
-          # clang only
-          - image: 'ubuntu:xenial'
-            compiler: clang
-          - image: 'debian:buster'
-            compiler: clang
-          - image: 'opensuse/leap'
-            compiler: clang
-          - image: 'fedora:33'
-            compiler: clang
-          - image: 'fedora:32'
-            compiler: clang
-          - image: 'centos:8'
-            compiler: clang
-          # gcc only
-          - image: 'debian:stretch'
-            compiler: gcc
           # macos
           - image: none
+            os: macos-latest
             compiler: clang
             flags: '-DUSE_PYTHON_3=ON -DCMAKE_FIND_FRAMEWORK=LAST'
+
+        # Remove the following combinations from the matrix
+        exclude:
+          # (only build with clang on these distros)
+          - image: 'ubuntu:xenial'
+            compiler: gcc
+          - image: 'debian:buster'
+            compiler: gcc
+          - image: 'opensuse/leap'
+            compiler: gcc
+          - image: 'fedora:33'
+            compiler: gcc
+          - image: 'fedora:32'
+            compiler: gcc
+          - image: 'centos:8'
+            compiler: gcc
+          # (only build with gcc on these distros)
+          - image: 'debian:stretch'
+            compiler: clang
+          
 
     steps:
 
     - name: Echo out
-      run: echo ${{ matrix.image }} ${{ matrix.compiler }} $ {{ matrix.flags }}
+      run: echo ${{matrix.os}} ${{matrix.image}} ${{matrix.compiler}} ${{matrix.flags}}
