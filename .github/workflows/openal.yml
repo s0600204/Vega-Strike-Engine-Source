@@ -49,18 +49,15 @@ jobs:
       if: always()
 
     - env:
-        PATH: "/usr/local/opt/openal-soft/bin:${PATH}"
+        PATH: "/usr/local/opt/openal-soft/bin:${{env.PATH}}"
       run: echo $PATH
       if: always()
 
-    - run: pwd
-      if: always()
-
-    - run: ls .
+    - run: echo $PATH
       if: always()
 
     - name: Find with CMake
       if: always()
       env:
         FLAGS:      ${{ matrix.flags }}
-      run: find/script $FLAGS
+      run: find/script.sh $FLAGS
