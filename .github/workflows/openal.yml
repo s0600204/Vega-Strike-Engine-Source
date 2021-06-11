@@ -23,20 +23,17 @@ jobs:
         run: |
           brew update
           brew upgrade
-          brew cleanup
-          brew cleanup --dry-run -s
 
       - name: Install general dependencies from homebrew
         run: |
           brew install mesa
 
-      - name: Update homebrew
+      - name: Clean cache
         run: |
-          brew cleanup --dry-run
-          brew cleanup --dry-run -s
+          brew cleanup -s
 
       - name: List cache
-        run: ls ${{ steps.cache.location }}
+        run: ls ~/Library/Caches/Homebrew
 
   build:
     name: find openAL
