@@ -20,6 +20,10 @@ jobs:
           path: ~/Library/Caches/Homebrew
           key: ${{ runner.os }}-homebrew_cache
 
+      - name: List cache
+        if: steps.cache.outputs.cache-hit == 'true'
+        run: ls ~/Library/Caches/Homebrew
+
       - name: Clear homebrew cache
         #if: steps.cache.outputs.cache-hit != 'true'
         run: |
