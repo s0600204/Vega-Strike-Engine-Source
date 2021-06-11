@@ -6,8 +6,41 @@ on:
     branches: [osx-openal]
 
 jobs:
+
+  compose:
+    name: build and cache homebrew
+    runs-on: macos-latest
+
+    steps:
+
+      - name: Create cache
+        uses: actions/cache@v2
+        with:
+          path: ~/Library/Caches/Homebrew
+          key: ${{ runner.os }}-homebrew_cache
+
+      - name: Update homebrew
+        run: |
+          brew update
+          brew upgrade
+          brew cleanup
+          brew cleanup --dry-run -s
+
+      - name: Install general dependencies from homebrew
+        run: |
+          brew install mesa
+
+      - name: Update homebrew
+        run: |
+          brew cleanup --dry-run
+          brew cleanup --dry-run -s
+
+      - name: List cache
+        run: ls ${{ steps.cache.location }}
+
   build:
     name: find openAL
+    needs: compose
     runs-on: macos-latest
 
     strategy:
@@ -19,35 +52,42 @@ jobs:
 
     steps:
 
+    - name: Access cache
+      uses: actions/cache@v2
+      with:
+        path: ~/Library/Caches/Homebrew
+        key: ${{ runner.os }}-homebrew_cache
+      
+
     #- name: Install OpenAL from homebrew
     #  if: always()
     #  run: brew install openal-soft
 
-    #- name: Install mesa from homebrew
+    - name: Install mesa from homebrew
+      if: always()
+      run: brew install mesa
+
+    #- name: Install glut from homebrew
     #  if: always()
-    #  run: brew install mesa
-
-    - name: Install glut from homebrew
-      if: always()
       # also pulls in mesa
-      run: brew install freeglut
+    #  run: brew install freeglut
 
-    - name: Checkout repository
-      uses: actions/checkout@v2
-      with:
-        fetch-depth: 1
-        submodules: false
+    #- name: Checkout repository
+    #  uses: actions/checkout@v2
+    #  with:
+    #    fetch-depth: 1
+    #    submodules: false
 
-    - name: Link mesa & GLUT (includes)
-      run: |
-        ln -s /usr/local/include/GL /usr/local/include/OpenGL
-        ln -s /usr/local/include/GL /usr/local/include/GLUT
+    #- name: Link mesa & GLUT (includes)
+    #  run: |
+    #    ln -s /usr/local/include/GL /usr/local/include/OpenGL
+    #    ln -s /usr/local/include/GL /usr/local/include/GLUT
 
-    - name: Link mesa (libs)
-      run: ln -s /usr/local/lib/libGL.dylib /usr/local/lib/libOpenGL.dylib
+    #- name: Link mesa (libs)
+    #  run: ln -s /usr/local/lib/libGL.dylib /usr/local/lib/libOpenGL.dylib
 
-    - name: Find with CMake
-      if: always()
-      env:
-        FLAGS:      ${{ matrix.flags }}
-      run: find/script.sh $FLAGS
+    #- name: Find with CMake
+    #  if: always()
+    #  env:
+    #    FLAGS:      ${{ matrix.flags }}
+    #  run: find/script.sh $FLAGS
