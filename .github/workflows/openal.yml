@@ -44,7 +44,9 @@ jobs:
         submodules: false
 
     - name: Link mesa (includes)
-      run: ln -s /usr/local/include/GL /usr/local/include/OpenGL
+      run: |
+        ln -s /usr/local/include/GL /usr/local/include/OpenGL
+        ln -s /usr/local/include/GL /usr/local/include/GLUT
 
     - name: Link mesa (libs)
       run: ln -s /usr/local/lib/libGL.dylib /usr/local/lib/libOpenGL.dylib
