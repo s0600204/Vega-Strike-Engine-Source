@@ -19,9 +19,9 @@ jobs:
 
       - name: Fetch dependencies from homebrew
         env:
-          HOMEBREW_CACHE: '.brew_cache'
+          HOMEBREW_CACHE: "${{ github.workspace }}/.brew_cache"
         run: |
-          brew fetch --deps mesa
+          brew install sdl
 
       - name: List cache
         run: ls .brew_cache/*_bottle_manifest--*
@@ -43,3 +43,13 @@ jobs:
       #    path: ~/Library/Caches/Homebrew
       #    key: ${{ runner.os }}-homebrew_cache-${{ steps.hash.hash }}
 
+      - name: Checkout repository
+        if: always()
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 1
+          submodules: false
+
+      - name: Find with CMake
+        if: always()
+        run: find/script.sh
