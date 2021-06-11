@@ -21,76 +21,18 @@ jobs:
           key: ${{ runner.os }}-homebrew_cache-2
 
       - name: List cache
-        run: ls ~/Library/Caches/Homebrew
+        run: |
+          ls -la ~/Library/Caches/Homebrew
+          ls -la ~/Library/Caches/Homebrew/downloads
 
       - name: Clear homebrew cache
-        #if: steps.cache.outputs.cache-hit != 'true'
-        run: |
-          brew cleanup -s
-
-      - name: "I mean *really* clear the cache"
-        #if: steps.cache.outputs.cache-hit != 'true'
         run: |
           rm -r ~/Library/Caches/Homebrew
 
-      - name: Install general dependencies from homebrew
+      - name: Download dependencies from homebrew
         #if: steps.cache.outputs.cache-hit != 'true'
         run: |
-          brew install mesa
+          brew fetch --deps mesa
 
       - name: List cache
-        run: ls ~/Library/Caches/Homebrew
-
-  build:
-    name: find openAL
-    needs: compose
-    runs-on: macos-latest
-
-    strategy:
-      fail-fast: false
-      matrix:
-        flags:
-          - '-DCMAKE_FIND_FRAMEWORK=LAST'
-          - '-DCMAKE_FIND_FRAMEWORK=NEVER'
-
-    steps:
-
-    - name: Access cache
-      uses: actions/cache@v2
-      with:
-        path: ~/Library/Caches/Homebrew
-        key: ${{ runner.os }}-homebrew_cache-2
-      
-
-    #- name: Install OpenAL from homebrew
-    #  if: always()
-    #  run: brew install openal-soft
-
-    - name: Install mesa from homebrew
-      if: always()
-      run: brew install mesa
-
-    #- name: Install glut from homebrew
-    #  if: always()
-      # also pulls in mesa
-    #  run: brew install freeglut
-
-    #- name: Checkout repository
-    #  uses: actions/checkout@v2
-    #  with:
-    #    fetch-depth: 1
-    #    submodules: false
-
-    #- name: Link mesa & GLUT (includes)
-    #  run: |
-    #    ln -s /usr/local/include/GL /usr/local/include/OpenGL
-    #    ln -s /usr/local/include/GL /usr/local/include/GLUT
-
-    #- name: Link mesa (libs)
-    #  run: ln -s /usr/local/lib/libGL.dylib /usr/local/lib/libOpenGL.dylib
-
-    #- name: Find with CMake
-    #  if: always()
-    #  env:
-    #    FLAGS:      ${{ matrix.flags }}
-    #  run: find/script.sh $FLAGS
+        run: ls -la ~/Library/Caches/Homebrew
