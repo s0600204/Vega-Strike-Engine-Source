@@ -18,10 +18,9 @@ jobs:
         uses: actions/cache@v2
         with:
           path: ~/Library/Caches/Homebrew
-          key: ${{ runner.os }}-homebrew_cache
+          key: ${{ runner.os }}-homebrew_cache-2
 
       - name: List cache
-        if: steps.cache.outputs.cache-hit == 'true'
         run: ls ~/Library/Caches/Homebrew
 
       - name: Clear homebrew cache
@@ -40,7 +39,6 @@ jobs:
           brew install mesa
 
       - name: List cache
-        if: steps.cache.outputs.cache-hit == 'true'
         run: ls ~/Library/Caches/Homebrew
 
   build:
@@ -61,7 +59,7 @@ jobs:
       uses: actions/cache@v2
       with:
         path: ~/Library/Caches/Homebrew
-        key: ${{ runner.os }}-homebrew_cache
+        key: ${{ runner.os }}-homebrew_cache-2
       
 
     #- name: Install OpenAL from homebrew
