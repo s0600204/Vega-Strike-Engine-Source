@@ -13,27 +13,28 @@ jobs:
 
     steps:
 
-      - name: Clear homebrew cache
-        run: |
-          rm -r ~/Library/Caches/Homebrew
+      #- name: Clear homebrew cache
+      #  run: |
+      #    rm -r ~/Library/Caches/Homebrew
 
       - name: Fetch dependencies from homebrew
+        env:
+          HOMEBREW_CACHE: '.brew_cache'
         run: |
           brew fetch --deps mesa
 
       - name: List cache
-        run: ls ~/Library/Caches/Homebrew/*_bottle_manifest--*
+        run: ls .brew_cache/*_bottle_manifest--*
 
-      - name: Calculate a hash
-        id: hash
-        run: |
-          hash=`cat ~/Library/Caches/Homebrew/downloads/*bottle_manifest.json | md5sum - | cut -d' ' -f1`
-          echo ::set-output name=hash::$hash
+      #- name: Calculate a hash
+      #  id: hash
+      #  run: |
+      #    hash=`cat ~/Library/Caches/Homebrew/downloads/*bottle_manifest.json | md5sum - | cut -d' ' -f1`
+      #    echo ::set-output name=hash::$hash
 
-      - name: Test echo hash
+      - name: Test hash
         run: |
-          echo The hash:
-          echo ${{ steps.hash.hash }}
+          echo ${{ hashFiles('.brew_cache/downloads/*bottle_manifest.json') }}
 
       #- name: Create/Access Cache
       #  id: cache
