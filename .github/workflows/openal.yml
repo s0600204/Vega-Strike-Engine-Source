@@ -13,26 +13,30 @@ jobs:
 
     steps:
 
-      - name: Create cache
+      - name: Create/Access Cache
+        id: cache
         uses: actions/cache@v2
         with:
           path: ~/Library/Caches/Homebrew
           key: ${{ runner.os }}-homebrew_cache
 
-      - name: Update homebrew
-        run: |
-          brew update
-          brew upgrade
-
-      - name: Install general dependencies from homebrew
-        run: |
-          brew install mesa
-
-      - name: Clean cache
+      - name: Clear homebrew cache
+        #if: steps.cache.outputs.cache-hit != 'true'
         run: |
           brew cleanup -s
 
+      - name: "I mean *really* clear the cache"
+        #if: steps.cache.outputs.cache-hit != 'true'
+        run: |
+          rm -r ~/Library/Caches/Homebrew
+
+      - name: Install general dependencies from homebrew
+        #if: steps.cache.outputs.cache-hit != 'true'
+        run: |
+          brew install mesa
+
       - name: List cache
+        if: steps.cache.outputs.cache-hit == 'true'
         run: ls ~/Library/Caches/Homebrew
 
   build:
