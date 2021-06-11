@@ -29,21 +29,16 @@ jobs:
 
     - name: Install glut from homebrew
       if: always()
+      # also pulls in mesa
       run: brew install freeglut
 
-    - run: ls /usr/local/include
-      if: always()
- 
-    - run: ls /usr/local/lib/lib*
-      if: always()
- 
     - name: Checkout repository
       uses: actions/checkout@v2
       with:
         fetch-depth: 1
         submodules: false
 
-    - name: Link mesa (includes)
+    - name: Link mesa & GLUT (includes)
       run: |
         ln -s /usr/local/include/GL /usr/local/include/OpenGL
         ln -s /usr/local/include/GL /usr/local/include/GLUT

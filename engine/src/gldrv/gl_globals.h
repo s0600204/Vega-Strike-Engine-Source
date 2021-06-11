@@ -99,6 +99,7 @@ struct GFXStats
 #include <GL/gl.h>
 #endif
 #if defined (__APPLE__) || defined (MACOSX)
+    #define GL_GLEXT_PROTOTYPES
     #include <GLUT/glut.h>
 //#if defined( GL_INIT_CPP) || defined( GL_MISC_CPP) || defined( GL_STATE_CPP)
 #if defined (GL_ARB_vertex_program) && defined (GL_ARB_fragment_program)
@@ -106,7 +107,6 @@ struct GFXStats
 #else
 #define OSX_LOWER_THAN_10_4
 #endif
-#define GL_GLEXT_PROTOTYPES
 //#endif
     #include <OpenGL/glext.h>
 #else
