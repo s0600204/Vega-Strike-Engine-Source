@@ -23,9 +23,13 @@ jobs:
     #  if: always()
     #  run: brew install openal-soft
 
-    - name: Install mesa from homebrew
+    #- name: Install mesa from homebrew
+    #  if: always()
+    #  run: brew install mesa
+
+    - name: Install glut from homebrew
       if: always()
-      run: brew install mesa
+      run: brew install freeglut
 
     - name: Checkout repository
       uses: actions/checkout@v2
@@ -33,11 +37,11 @@ jobs:
         fetch-depth: 1
         submodules: false
 
-    - name: Link mesa (includes)
-      run: ln -s /usr/local/include/GL /usr/local/include/OpenGL
+    #- name: Link mesa (includes)
+    #  run: ln -s /usr/local/include/GL /usr/local/include/OpenGL
 
-    - name: Link mesa (libs)
-      run: ln -s /usr/local/lib/libGL.dylib /usr/local/lib/libOpenGL.dylib
+    #- name: Link mesa (libs)
+    #  run: ln -s /usr/local/lib/libGL.dylib /usr/local/lib/libOpenGL.dylib
 
     - name: Find with CMake
       if: always()
