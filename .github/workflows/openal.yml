@@ -17,29 +17,28 @@ jobs:
         run: |
           rm -r ~/Library/Caches/Homebrew
 
-      - name: Create/Access Cache
-        id: cache
-        uses: actions/cache@v2
-        with:
-          path: ~/Library/Caches/Homebrew
-          key: ${{ runner.os }}-homebrew_cache-2
-
-      - name: Download dependencies from homebrew
-        if: steps.cache.outputs.cache-hit != 'true'
+      - name: Fetch dependencies from homebrew
         run: |
           brew fetch --deps mesa
 
       - name: List cache
         run: ls ~/Library/Caches/Homebrew/*_bottle_manifest--*
 
-      - name: print hash
+      - name: Calculate a hash
+        id: hash
         run: |
-          pwd
-          echo ${{ github.workspace }}
-          ln -s ~/Library/Caches/Homebrew brew-cache
-          ls -la .
-          ls ./brew-cache
-          echo ${{ hashFiles('brew-cache/*_bottle_manifest--*') }}
-          echo ${{ hashFiles('brew-cache/downloads/*bottle_manifest.json') }}
-          echo ${{ hashFiles('**_bottle_manifest--*') }}
-          echo ${{ hashFiles('**bottle_manifest.json') }}
+          hash=`cat ~/Library/Caches/Homebrew/downloads/*bottle_manifest.json | md5sum - | cut -d' ' -f1`
+          echo ::set-output name=hash::$hash
+
+      - name: Test echo hash
+        run: |
+          echo The hash:
+          echo ${{ steps.hash.hash }}
+
+      #- name: Create/Access Cache
+      #  id: cache
+      #  uses: actions/cache@v2
+      #  with:
+      #    path: ~/Library/Caches/Homebrew
+      #    key: ${{ runner.os }}-homebrew_cache-${{ steps.hash.hash }}
+
