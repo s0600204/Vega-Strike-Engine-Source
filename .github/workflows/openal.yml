@@ -43,8 +43,8 @@ jobs:
     - name: Link mesa (includes)
       run: ln -s /usr/local/include/GL /usr/local/include/OpenGL
 
-    #- name: Link mesa (libs)
-    #  run: ln -s /usr/local/lib/libGL.dylib /usr/local/lib/libOpenGL.dylib
+    - name: Link mesa (libs)
+      run: ln -s /usr/local/lib/libGL.dylib /usr/local/lib/libOpenGL.dylib
 
     - name: Find with CMake
       if: always()
