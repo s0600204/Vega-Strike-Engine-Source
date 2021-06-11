@@ -13,6 +13,10 @@ jobs:
 
     steps:
 
+      - name: Clear homebrew cache
+        run: |
+          rm -r ~/Library/Caches/Homebrew
+
       - name: Create/Access Cache
         id: cache
         uses: actions/cache@v2
@@ -20,19 +24,22 @@ jobs:
           path: ~/Library/Caches/Homebrew
           key: ${{ runner.os }}-homebrew_cache-2
 
-      - name: List cache
-        run: |
-          ls -la ~/Library/Caches/Homebrew
-          ls -la ~/Library/Caches/Homebrew/downloads
-
-      - name: Clear homebrew cache
-        run: |
-          rm -r ~/Library/Caches/Homebrew
-
       - name: Download dependencies from homebrew
-        #if: steps.cache.outputs.cache-hit != 'true'
+        if: steps.cache.outputs.cache-hit != 'true'
         run: |
           brew fetch --deps mesa
 
       - name: List cache
-        run: ls -la ~/Library/Caches/Homebrew
+        run: ls ~/Library/Caches/Homebrew/*_bottle_manifest--*
+
+      - name: print hash
+        run: |
+          pwd
+          echo ${{ github.workspace }}
+          ln -s ~/Library/Caches/Homebrew brew-cache
+          ls -la .
+          ls ./brew-cache
+          echo ${{ hashFiles('brew-cache/*_bottle_manifest--*') }}
+          echo ${{ hashFiles('brew-cache/downloads/*bottle_manifest.json') }}
+          echo ${{ hashFiles('**_bottle_manifest--*') }}
+          echo ${{ hashFiles('**bottle_manifest.json') }}
