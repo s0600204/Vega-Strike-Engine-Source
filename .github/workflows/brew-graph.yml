@@ -1,0 +1,37 @@
+name: 'Homebrew Graph Generation'
+
+on:
+  push:
+    branches:
+    - brew-graph
+
+  # Activate manually
+  workflow_dispatch:
+
+jobs:
+  build:
+    name: Build
+    runs-on: ${{ matrix.os }}
+
+    strategy:
+      fail-fast: false
+      matrix:
+        os:
+          - macos-10.15
+
+    steps:
+
+    - name: Install homebrew graph
+      run: |
+        brew tap martido/homebrew-graph
+        brew install graphviz
+
+    - name: Generate graph
+      run: |
+        brew graph --installed | dot -T png -o graph.png
+
+    - name: Upload artifact
+      uses: actions/upload-artifact@v2
+      with:
+        name: brew-graph_${{ matrix.os }}.png
+        path: graph.png
