@@ -28,7 +28,7 @@ jobs:
 
     - name: Generate graph
       run: |
-        brew graph --installed | dot -T png -o graph.png
+        brew graph --installed --highlight-leaves | fdp -T png -o graph.png
 
     - name: Upload artifact
       uses: actions/upload-artifact@v2
