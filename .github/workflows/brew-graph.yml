@@ -18,10 +18,10 @@ jobs:
       fail-fast: false
       matrix:
         os:
-          - macos-10.13
-          - macos-10.14
+          #- macos-10.13
+          #- macos-10.14
           - macos-10.15
-          - macos-11
+          #- macos-11
 
     steps:
 
@@ -30,12 +30,20 @@ jobs:
         brew tap martido/homebrew-graph
         brew install graphviz
 
-    - name: Generate graph
+    - name: Generate graphs
       run: |
-        brew graph --installed --highlight-leaves --include-casks | fdp -T png -o graph.png
+        brew graph --installed --highlight-leaves -o graph.dot
+        dot       -T jpg -o brew-graph_${{ matrix.os }}_dot.jpg graph.dot
+        neato     -T jpg -o brew-graph_${{ matrix.os }}_neato.jpg graph.dot
+        twopi     -T jpg -o brew-graph_${{ matrix.os }}_twopi.jpg graph.dot
+        circo     -T jpg -o brew-graph_${{ matrix.os }}_circo.jpg graph.dot
+        fdp       -T jpg -o brew-graph_${{ matrix.os }}_fdp.jpg graph.dot
+        sfdp      -T jpg -o brew-graph_${{ matrix.os }}_sfdp.jpg graph.dot
+        patchwork -T jpg -o brew-graph_${{ matrix.os }}_patchwork.jpg graph.dot
+        osage     -T jpg -o brew-graph_${{ matrix.os }}_osage.jpg graph.dot
 
-    - name: Upload artifact
+    - name: Upload graphs
       uses: actions/upload-artifact@v2
       with:
-        name: brew-graph_${{ matrix.os }}.png
-        path: graph.png
+        name: brew-graphs_${{ matrix.os }}
+        path: '*.jpg'
